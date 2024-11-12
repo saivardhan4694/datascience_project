@@ -9,13 +9,12 @@ model_uri = "mlflow-artifacts:/627b25973d85431787d9911c8e624401/89477567b0b84bca
 model = mlflow.pyfunc.load_model(model_uri)
 
 # Streamlit App Title
-st.title("Wine Quality Prediction App 🍷")
-st.write("Enter the characteristics of the wine to predict its quality.")
+st.title("Wine Quality Predictor🍷")
+st.write("<<<<<-------  Enter the characteristics of the wine to predict its quality.")
 
 # Sidebar for user inputs
 st.sidebar.header("Input Parameters")
 
-# Function to get user input using Streamlit's columns for better display
 def get_user_input():
     fixed_acidity = st.sidebar.number_input("Fixed Acidity", min_value=0.0, max_value=15.0, value=7.4, step=0.1)
     volatile_acidity = st.sidebar.number_input("Volatile Acidity", min_value=0.0, max_value=2.0, value=0.7, step=0.01)
@@ -44,25 +43,24 @@ def get_user_input():
         'alcohol': alcohol
     }
     
-    # Convert the dictionary to a DataFrame
     features = pd.DataFrame(data, index=[0])
     return features
 
 # Get user input
 input_df = get_user_input()
 
-# Display user input in a cleaner format
+# Display user input in columns for better layout
 st.markdown("### Selected Wine Features 📊")
-for column, value in input_df.iloc[0].items():
-    st.markdown(f"**{column.replace('_', ' ').title()}:** {value}")
+cols = st.columns(3)  
 
-# Make predictions using the ElasticNet model
+# Arrange the features into the columns
+for index, (feature, value) in enumerate(input_df.iloc[0].items()):
+    col = cols[index % 3]  # Rotate through the 3 columns
+    col.markdown(f"**{feature}:** {value}")
+
+# Make predictions using the model
 if st.button("Predict Quality"):
     prediction = model.predict(input_df)
     st.markdown("### Prediction Result 🍇")
     st.success(f"The predicted wine quality is: **{round(prediction[0], 2)}**")
-    st.toast("Prediction complete! 🎉")
-
-
-# Run the Streamlit app using:
-# streamlit run app.py
+    st.balloons()
