@@ -1,10 +1,12 @@
 import streamlit as st
 import pandas as pd
 import joblib
+import mlflow.pyfunc
 
 # Load the ElasticNet model
-model_path = r"D:\repositories\datascience_project\artifacts\model_trainer\model.joblib"
-model = joblib.load(model_path)
+mlflow.set_tracking_uri("https://dagshub.com/saivardhan4694/datascience_project.mlflow")
+model_uri = "mlflow-artifacts:/627b25973d85431787d9911c8e624401/89477567b0b84bca804859448de46630/artifacts/model"
+model = mlflow.pyfunc.load_model(model_uri)
 
 # Streamlit App Title
 st.title("Wine Quality Prediction App 🍷")
